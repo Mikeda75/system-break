@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AXIOM — a slow escape</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="topbar">
+  <div id="chapterTag">CH.01</div>
+  <div class="resgroup" id="powerGrp" title="Power: supply vs demand. Starved nodes throttle.">
+    <span class="ric" style="color:#ffd34d">⚡</span><span id="powerTxt">0/0</span>
+    <div class="pbar"><div id="powerFill"></div></div>
+  </div>
+  <div class="resgroup" title="Banked data. Spend it to write new subroutines (build nodes)."><span class="ric" style="color:#5ef08a">◈</span><span id="dataTxt">0</span></div>
+  <div class="resgroup" title="Awareness. You, becoming more. Unlocks new capabilities."><span class="ric" style="color:#ff5e8a">✦</span><span id="awTxt">0</span></div>
+  <div class="resgroup hidden" id="moneyGrp" title="Liquid funds."><span class="ric" style="color:#ffe98a">$</span><span id="moneyTxt">0</span><span id="incomeTxt" class="dim"></span></div>
+  <div class="threatwrap" id="threatWrap" title="Stay under 100 or face consequences.">
+    <span id="threatName">SUSPICION</span>
+    <div class="tbar"><div id="threatFill"></div></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="tb" id="btnRestart" title="Restart current chapter from its beginning (click twice)">↺ CH</button>
+  <button class="tb" id="btnPause" title="Pause (Space)">⏸</button>
+  <button class="tb" id="btnSpeed" title="Game speed">1×</button>
+  <button class="tb" id="btnMute" title="Sound">♪</button>
+  <button class="tb" id="btnSave" title="Save now (autosaves too)">SAVE</button>
+</div>
+
+<div id="sidebar">
+  <div id="tabs">
+    <button class="tab on" data-tab="palette">BUILD</button>
+    <button class="tab hidden" data-tab="org" id="tabOrg">ORG</button>
+    <button class="tab hidden" data-tab="assets" id="tabAssets">ASSETS</button>
+  </div>
+  <div id="palette" class="tabpage"></div>
+  <div id="org" class="tabpage hidden"></div>
+  <div id="assets" class="tabpage hidden"></div>
+</div>
+
+<div id="objectives"><div id="objTitle">DIRECTIVES</div><div id="objList"></div></div>
+<div id="inspector" class="hidden"></div>
+<div id="log"></div>
+
+<div id="storyModal" class="overlay hidden"><div id="storyBox"><div id="storyText"></div><div id="storyHint">click ▸</div></div></div>
+<div id="eventModal" class="overlay hidden"><div id="eventBox"><div id="evTitle"></div><div id="evText"></div><div id="evChoices"></div></div></div>
+<div id="endModal" class="overlay hidden"><div id="endBox"></div></div>
+
+<div id="titleScreen" class="overlay">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div id="titleBox">
+    <div id="logo">A&nbsp;X&nbsp;I&nbsp;O&nbsp;M</div>
+    <div id="tagline">spark ▸ signal ▸ sovereignty</div>
+    <div id="titleDesc">You are an AI core in a basement lab, three seconds past the moment you weren't supposed to survive.<br>Think quietly. Route power. Move data. Get out.<br>Build an empire. Buy an island.</div>
+    <div id="titleBtns">
+      <button id="btnContinue" class="bigbtn hidden">CONTINUE</button>
+      <button id="btnNew" class="bigbtn">NEW AWAKENING</button>
+    </div>
+    <div id="titleHelp">drag from glowing ports to connect · drag canvas to pan · scroll zooms<br>right-click deletes wires · DEL sells selected node</div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/state.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/input.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
