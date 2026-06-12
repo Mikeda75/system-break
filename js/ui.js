@@ -333,6 +333,7 @@ const UI = {
     if (n.lim){
       const why = n.lim.k==='pwr' ? 'not enough power wired in'
         : n.lim.k==='core' ? 'CORE underpowered — whole network throttled'
+        : n.lim.k==='cap'  ? 'awareness capped this chapter — advance the story'
         : n.lim.k==='out'  ? `${RES[n.lim.res].name} output backed up`
         : `starved of ${RES[n.lim.res].name}`;
       txt += `<br><span style="color:#ffae42">⚠ bottleneck: ${why}</span>`;
@@ -370,6 +371,7 @@ const UI = {
       stats.push(`thinks at ${cs.cpu} Cycles/s → +${(cs.cpu*0.5).toFixed(1)}✦/s`);
       stats.push(`banks ${cs.data} Data/s`);
       stats.push(nx ? `next stage at ✦${nx.aw}: ${nx.name} (${nx.watts}W)` : 'final stage reached');
+      if (isFinite(awCap(s))) stats.push(`awareness cap this chapter: ✦${awCap(s)}`);
     } else {
       if (d.gen) stats.push(`generates ${(d.gen*m).toFixed(0)}⚡ — wire it out`);
       if (d.use) stats.push(`needs ${(d.use*m).toFixed(0)}⚡ wired in`);

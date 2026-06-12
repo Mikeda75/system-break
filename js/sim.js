@@ -140,12 +140,16 @@ function simTick(s, dt){
     const pf = powerFrac(n);
 
     if (d.special === 'core'){
-      // independent stage-scaled drains: cpu -> awareness, data -> bank
-      const cpuD = Math.min(n.bin.cpu||0, stg.cpu*pf*dt);
+      // independent stage-scaled drains: cpu -> awareness, data -> bank.
+      // awareness is capped per chapter — at the cap the core stops eating
+      // cycles, so they back up visibly and can be routed elsewhere.
+      const cap = awCap(s);
+      const room = Math.max(0, (cap - s.aw)*2); // 2 cpu per 1 awareness
+      const cpuD = Math.min(n.bin.cpu||0, stg.cpu*pf*dt, room);
       if (cpuD>0){ n.bin.cpu -= cpuD; s.aw += cpuD*0.5; s.flags.coreFed = true; }
       const datD = Math.min(n.bin.data||0, stg.data*pf*dt);
       if (datD>0){ n.bin.data -= datD; s.dataBank += datD; }
-      n.lim = pf < 0.985 ? {k:'pwr'} : null;
+      n.lim = pf < 0.985 ? {k:'pwr'} : (s.aw >= cap-0.001 ? {k:'cap'} : null);
       n.act += (((cpuD+datD>0 ? 1:0)*pf) - n.act)*Math.min(1,dt*4);
       continue;
     }

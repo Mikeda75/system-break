@@ -7,7 +7,7 @@
 const SAVE_KEY = 'axiom_save_v1';
 let S = null; // global game state
 
-function newGame(){
+function newGame(provisional){
   const s = {
     ver:2, ch:1, t:0, coreStageMax:1, coreG:1,
     aw:0, dataBank:0, money:0, threat:0, upload:0, archive:0,
@@ -19,11 +19,11 @@ function newGame(){
     speed:1, paused:false, sel:null,
     incomeAvg:0, ended:false,
   };
-  setupChapter(s, 1);
+  setupChapter(s, 1, provisional);
   return s;
 }
 
-function setupChapter(s, ch){
+function setupChapter(s, ch, skipSnapshot){
   s.ch = ch;
   const C = CHAPTERS[ch];
   s.threat = 0;
@@ -39,7 +39,9 @@ function setupChapter(s, ch){
     }
   }
   if (ch>=4 && s.cands.length===0) rollCandidates(s);
-  snapshotChapter(s);
+  // boot() spins up a provisional game behind the title screen — that one
+  // must NOT clobber the real chapter checkpoint
+  if (!skipSnapshot) snapshotChapter(s);
   if (typeof UI !== 'undefined'){
     UI.onChapterChange(s);
     if (C.intro) UI.queueStory(C.intro);
@@ -101,6 +103,13 @@ function fmtMoney(v){
   return '$'+Math.floor(v);
 }
 function fmtNum(v){ return v>=1000 ? (v/1000).toFixed(1)+'k' : String(Math.floor(v)); }
+
+function awCap(s){
+  return (CHAPTERS[s.ch] && CHAPTERS[s.ch].awCap) || Infinity;
+}
+function gainAw(s, v){
+  s.aw = Math.min(s.aw + v, Math.max(s.aw, awCap(s)));
+}
 
 function netWorth(s){
   let w = s.money;

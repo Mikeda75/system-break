@@ -409,8 +409,15 @@ function drawNode(s, n, now){
     CX.textAlign = 'center';
     CX.fillStyle = hue;
     CX.fillText(`MK.${st} ${cs.name}`, n.x, r.y + r.h - 17);
-    CX.fillStyle = 'rgba(255,94,138,0.6)';
-    CX.fillText(nx ? `✦${Math.floor(s.aw)} → ${nx.aw}` : `✦${Math.floor(s.aw)} · APEX`, n.x, r.y + r.h - 6);
+    const cap = awCap(s);
+    if (isFinite(cap) && s.aw >= cap-0.5){
+      CX.fillStyle = 'rgba(255,174,66,0.85)';
+      CX.fillText(`✦${Math.floor(s.aw)} · CHAPTER CAP`, n.x, r.y + r.h - 6);
+    } else {
+      CX.fillStyle = 'rgba(255,94,138,0.6)';
+      const next = nx ? Math.min(nx.aw, isFinite(cap)?cap:nx.aw) : null;
+      CX.fillText(next ? `✦${Math.floor(s.aw)} → ${next}` : `✦${Math.floor(s.aw)} · APEX`, n.x, r.y + r.h - 6);
+    }
   }
 
   // icon with working pulse

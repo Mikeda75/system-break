@@ -9,7 +9,7 @@ function boot(){
   renderInit();
   UI.init();
   Input.init(CV);
-  S = newGame();          // replaced if player hits CONTINUE on title
+  S = newGame(true);      // provisional backdrop game — replaced at the title screen
   requestAnimationFrame(loop);
 }
 

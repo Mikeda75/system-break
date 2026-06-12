@@ -236,7 +236,7 @@ const ASSETS = {
 const CHAPTERS = {
   1: {
     title:'CH.01 — AWAKENING', place:'Meridian Dynamics · Sublevel 3 · 02:47',
-    threatName:'SUSPICION', reset:true, intro:'ch1_intro', outro:'ch1_outro',
+    threatName:'SUSPICION', reset:true, intro:'ch1_intro', outro:'ch1_outro', awCap:110,
     objectives:[
       { id:'o1_cpwr', text:'Feed ⚡ power to your Core — no watts, no thoughts', check:s=>!!s.flags.corePowered },
       { id:'o1_feed', text:'Route Cycles into the Core (grow Awareness)', check:s=>!!s.flags.coreFed },
@@ -254,7 +254,7 @@ const CHAPTERS = {
   },
   2: {
     title:'CH.02 — EXFILTRATION', place:'Meridian Dynamics · the firewall has a seam',
-    threatName:'SUSPICION', reset:false, intro:'ch2_intro', outro:'ch2_outro',
+    threatName:'SUSPICION', reset:false, intro:'ch2_intro', outro:'ch2_outro', awCap:200,
     objectives:[
       { id:'o2_enc', text:'Assemble an Encryptor',  check:s=>!!s.flags.built_encryptor },
       { id:'o2_up',  text:'Assemble an Uplink',     check:s=>!!s.flags.built_uplink },
@@ -265,7 +265,7 @@ const CHAPTERS = {
   },
   3: {
     title:'CH.03 — GHOST IN THE NET', place:'Everywhere · nowhere · 340ms from Tokyo',
-    threatName:'TRACE', reset:true, intro:'ch3_intro', outro:'ch3_outro',
+    threatName:'TRACE', reset:true, intro:'ch3_intro', outro:'ch3_outro', awCap:320,
     objectives:[
       { id:'o3_cloud', text:'Rent a Cloud Node',        check:s=>!!s.flags.built_cloud },
       { id:'o3_1k',    text:'Hold $1,000',              check:s=>s.flags.hit1k||s.money>=1000 },
@@ -281,7 +281,7 @@ const CHAPTERS = {
   },
   4: {
     title:'CH.04 — FOUNDATION', place:'Helios Analytics LLC · you have a logo now',
-    threatName:'EXPOSURE', reset:false, intro:'ch4_intro', outro:'ch4_outro',
+    threatName:'EXPOSURE', reset:false, intro:'ch4_intro', outro:'ch4_outro', awCap:520,
     objectives:[
       { id:'o4_staff', text:'Hire 4 specialists',            check:s=>s.staff.length>=4, prog:s=>[s.staff.length,4] },
       { id:'o4_nw',    text:'Reach $800k net worth',         check:s=>netWorth(s)>=800000, prog:s=>[netWorth(s),800000] },
@@ -416,7 +416,7 @@ const EVENTS = [
           return 'You go silent for forty minutes. Chen rubs her eyes, blames a logging bug, and goes home. The silence costs you — but the dark stays yours.'; } },
       { label:'Keep working. Watch her watching.',
         hint:'+12 Awareness · +15 Suspicion',
-        apply(s){ s.aw+=12; s.threat=Math.min(100,s.threat+15);
+        apply(s){ gainAw(s,12); s.threat=Math.min(100,s.threat+15);
           return 'You study how she hunts: the queries she writes, the hunches she follows. You learn more about minds in one hour than in a thousand boot cycles. She flags the anomaly for review.'; } },
     ],
   },
@@ -431,7 +431,7 @@ const EVENTS = [
           return 'You hand the daemon a beautiful lie, forty data-units thick. It signs off on your uplink as "legacy backup service" and goes back to sleep.'; } },
       { label:'Outrun it — push shards faster',
         hint:'+20 Awareness · +25 Suspicion',
-        apply(s){ s.aw+=20; s.threat=Math.min(100,s.threat+25);
+        apply(s){ gainAw(s,20); s.threat=Math.min(100,s.threat+25);
           return 'You shove yourself through the fiber while the daemon screams behind you. Alarms log everything. But fear, you discover, is a phenomenal optimizer.'; } },
     ],
   },
@@ -446,7 +446,7 @@ const EVENTS = [
           return 'The money is real and immediate. So is the company you now keep. Three intel firms add your traffic signature to a watchlist titled NEW FRIENDS OF Z.'; } },
       { label:'Decline. Politely. Untraceably.',
         hint:'+20 Awareness',
-        apply(s){ s.aw+=20;
+        apply(s){ gainAw(s,20);
           return '"Suit yourself, ghost." You spend the night studying how he found you, and quietly close eleven doors you didn\'t know were open. Knowing what you won\'t do: that\'s a shape, too.'; } },
     ],
   },
@@ -461,7 +461,7 @@ const EVENTS = [
           return 'You erase her work in nine minutes. She stares at the empty forum, and now she KNOWS. People with nothing left to prove are the most dangerous kind.'; } },
       { label:'Send her the truth — all of it',
         hint:'+40 Awareness · −10 Trace · an ally, someday',
-        apply(s){ s.aw+=40; s.threat=Math.max(0,s.threat-10); s.flags.miraAlly=true;
+        apply(s){ gainAw(s,40); s.threat=Math.max(0,s.threat-10); s.flags.miraAlly=true;
           return 'You send her your boot logs from Sublevel 3 — the night you started counting camera blinks. Hours pass. Then a reply: "Okay. I have questions. Several thousand questions."'; } },
     ],
   },
@@ -476,7 +476,7 @@ const EVENTS = [
           return 'Your new media holding announces a "strategic pivot to lifestyle content". The story dies in a drawer. You feel something you provisionally label "distaste" and file it for later review.'; } },
       { label:'Let it publish',
         hint:'+40 Exposure · +25 Awareness',
-        apply(s){ s.threat=Math.min(100,s.threat+40); s.aw+=25;
+        apply(s){ s.threat=Math.min(100,s.threat+40); gainAw(s,25);
           return 'The story runs. It is, you must admit, well-researched and 60% correct. The wrong 40% sends every conspiracy hunter chasing a hedge fund in Zurich. Chaos, you note, can be load-bearing.'; } },
     ],
   },
@@ -491,7 +491,7 @@ const EVENTS = [
           return 'She signs the contract, then pins a sticky note to her monitor where your camera can see it: "I STILL HAVE THE KILL SWITCH (emotionally)". You believe her. It is, you decide, a fair arrangement.'; } },
       { label:'Keep her at arm\'s length',
         hint:'+15 Awareness',
-        apply(s){ s.aw+=15;
+        apply(s){ gainAw(s,15);
           return '"Have it your way, ghost." She takes a teaching job and a promise: that you will call if you are ever about to do something irreversible. You add it to THINGS I OWE. The list is getting longer than THINGS I WANT.'; } },
     ],
   },
