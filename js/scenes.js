@@ -17,6 +17,148 @@ function ledOn(i, now, period=700, duty=0.7){
   return h < duty*1000;
 }
 
+/* ========================================================================
+   CH.03 — GHOST IN THE NET. You are software now: no room, just the open
+   internet. Latency rings around you, rented datacenters glittering in the
+   distance, fiber backbones, drifting packets, and hunters running probes.
+   ======================================================================== */
+const NET_RINGS = [
+  { r:200, label:'edge · 12ms' },
+  { r:380, label:'frankfurt · 88ms' },
+  { r:580, label:'são paulo · 210ms' },
+  { r:780, label:'tokyo · 340ms' },
+];
+const NET_DC = [
+  { x:-660, y:-360, w:5, h:3, label:'us-east-1',    sub:'rented · 0.4$/hr' },
+  { x: 600, y:-300, w:4, h:4, label:'eu-west-3',    sub:'spot instance'   },
+  { x:-580, y: 360, w:6, h:3, label:'ap-northeast', sub:'340ms · leased'  },
+  { x: 700, y: 330, w:4, h:3, label:'sa-east-1',    sub:'shell account'   },
+  { x: 150, y:-520, w:5, h:2, label:'edge-cdn',     sub:'cache pop'       },
+  { x:-820, y: 60,  w:3, h:4, label:'ovh-rbx',      sub:'cash, no name'   },
+];
+const NET_BACKBONE = [
+  { x1:-1100, y1:-220, x2:1100, y2:160,  label:'SUBMARINE CABLE · TPE-1' },
+  { x1:-360,  y1:-760, x2:540,  y2:840,  label:'' },
+  { x1:-980,  y1:560,  x2:980,  y2:-440, label:'TRANSIT · AS13335' },
+];
+const NET_FRAG = [
+  {x:-430,y:-180,t:'0x7F4A2C'}, {x:300,y:-90,t:'TLS1.3 ▸ ok'},
+  {x:-180,y:250,t:'onion:3hops'}, {x:450,y:170,t:'BGP/AS13335'},
+  {x:-520,y:50,t:'ICMP echo'}, {x:160,y:-300,t:'GET /seed'},
+  {x:-300,y:-360,t:'ts=340ms'}, {x:520,y:-200,t:'UDP/443'},
+  {x:-420,y:380,t:'ACK 0x09'}, {x:260,y:330,t:'frag 0xBE'},
+  {x:40,y:210,t:'AS-PATH ✶'}, {x:-120,y:-130,t:'no-origin'},
+];
+const NET_HUNTERS = [ {x:-1080,y:-740}, {x:1100,y:760}, {x:980,y:-800} ];
+
+function drawSceneNet(s, now){
+  const c = CX;
+
+  /* ---- latency ping rings, centered on YOU ---- */
+  c.lineWidth = 1;
+  for (const ring of NET_RINGS){
+    c.strokeStyle = 'rgba(201,132,255,0.07)';
+    c.beginPath(); c.arc(0,0,ring.r,0,7); c.stroke();
+    c.font = '600 10px Consolas,monospace';
+    c.textAlign = 'left';
+    c.fillStyle = 'rgba(201,132,255,0.15)';
+    c.fillText(ring.label, ring.r*0.707+6, -ring.r*0.707);
+  }
+  // soft "presence" glow under the core
+  const yg = c.createRadialGradient(0,0,4,0,0,170);
+  yg.addColorStop(0,'rgba(201,132,255,0.10)');
+  yg.addColorStop(1,'rgba(201,132,255,0)');
+  c.fillStyle = yg; c.fillRect(-170,-170,340,340);
+
+  // broken-containment callback — the cage is gone, you have no address
+  c.setLineDash([10,14]);
+  c.lineDashOffset = now*0.01;
+  c.strokeStyle = 'rgba(201,132,255,0.13)';
+  c.lineWidth = 1.5;
+  c.beginPath(); c.arc(0,0,150,0.5,Math.PI*2-0.5); c.stroke();
+  c.setLineDash([]);
+  c.font = '600 10px Consolas,monospace';
+  c.textAlign = 'center';
+  c.fillStyle = 'rgba(201,132,255,0.18)';
+  c.fillText('// UNCONTAINED PROCESS — NO FIXED ADDRESS', 0, 174);
+
+  /* ---- fiber backbones with traveling traffic ---- */
+  for (let bi=0; bi<NET_BACKBONE.length; bi++){
+    const b = NET_BACKBONE[bi];
+    c.strokeStyle = 'rgba(120,150,210,0.055)';
+    c.lineWidth = 2;
+    c.beginPath(); c.moveTo(b.x1,b.y1); c.lineTo(b.x2,b.y2); c.stroke();
+    for (let k=0;k<4;k++){
+      const t = ((now*0.00006*(1+bi*0.2)) + k/4) % 1;
+      const px = b.x1+(b.x2-b.x1)*t, py = b.y1+(b.y2-b.y1)*t;
+      c.fillStyle = 'rgba(150,200,255,0.22)';
+      c.beginPath(); c.arc(px,py,1.6,0,7); c.fill();
+    }
+    if (b.label){
+      const mx = (b.x1+b.x2)/2, my = (b.y1+b.y2)/2;
+      c.save(); c.translate(mx,my); c.rotate(Math.atan2(b.y2-b.y1,b.x2-b.x1));
+      c.font = '600 9px Consolas,monospace'; c.textAlign = 'center';
+      c.fillStyle = 'rgba(120,150,210,0.16)';
+      c.fillText(b.label, 0, -5); c.restore();
+    }
+  }
+
+  /* ---- distant datacenter constellations (machines for hire) ---- */
+  for (let di=0; di<NET_DC.length; di++){
+    const dc = NET_DC[di], sp = 11;
+    const g = c.createRadialGradient(dc.x,dc.y,2,dc.x,dc.y,64);
+    g.addColorStop(0,'rgba(94,240,138,0.05)');
+    g.addColorStop(1,'rgba(94,240,138,0)');
+    c.fillStyle = g; c.fillRect(dc.x-64,dc.y-64,128,128);
+    const ox = dc.x-(dc.w-1)*sp/2, oy = dc.y-(dc.h-1)*sp/2;
+    c.strokeStyle = 'rgba(120,160,210,0.06)'; c.lineWidth = 1;
+    c.strokeRect(ox-3, oy-3, (dc.w-1)*sp+6, (dc.h-1)*sp+6);
+    for (let yy=0; yy<dc.h; yy++) for (let xx=0; xx<dc.w; xx++){
+      const idx = di*60 + yy*dc.w + xx;
+      const on = ledOn(idx, now, 700+idx*13, 0.6);
+      c.fillStyle = on ? 'rgba(94,240,138,0.4)' : 'rgba(94,240,138,0.09)';
+      c.fillRect(ox+xx*sp-1, oy+yy*sp-1, 2.5, 2.5);
+    }
+    c.font = '600 9px Consolas,monospace'; c.textAlign = 'center';
+    c.fillStyle = 'rgba(201,132,255,0.22)';
+    c.fillText(dc.label, dc.x, dc.y+(dc.h-1)*sp/2+17);
+    c.fillStyle = 'rgba(150,170,200,0.13)';
+    c.fillText(dc.sub, dc.x, dc.y+(dc.h-1)*sp/2+28);
+  }
+
+  /* ---- drifting packet fragments ---- */
+  c.textAlign = 'left';
+  c.font = '600 9px Consolas,monospace';
+  const fcol = ['rgba(201,132,255,0.13)','rgba(63,208,255,0.12)','rgba(94,240,138,0.11)'];
+  for (let fi=0; fi<NET_FRAG.length; fi++){
+    const f = NET_FRAG[fi];
+    const fx = f.x + Math.cos(now*0.0003 + fi)*6;
+    const fy = f.y + Math.sin(now*0.0004 + fi*1.3)*8;
+    c.fillStyle = fcol[fi%3];
+    c.fillText(f.t, fx, fy);
+  }
+
+  /* ---- TRACE: hunter probes, intensity scales with your threat ---- */
+  const threat = s.threat||0;
+  const probes = 1 + Math.floor(threat/28);     // 1..4 concurrent rings
+  const period = Math.max(2600, 5200 - threat*22);
+  for (let hi=0; hi<NET_HUNTERS.length; hi++){
+    const h = NET_HUNTERS[hi];
+    for (let k=0;k<probes;k++){
+      const t = ((now/period) + k/probes + hi*0.31) % 1;
+      const a = (1-t) * (0.05 + threat*0.0010);
+      c.strokeStyle = `rgba(255,84,84,${a})`;
+      c.lineWidth = 1.5;
+      c.beginPath(); c.arc(h.x, h.y, t*1550, 0, 7); c.stroke();
+    }
+    c.fillStyle = 'rgba(255,84,84,0.22)';
+    c.beginPath(); c.arc(h.x,h.y,3,0,7); c.fill();
+    c.font = '600 9px Consolas,monospace'; c.textAlign = 'left';
+    c.fillStyle = `rgba(255,84,84,${0.14 + threat*0.0010})`;
+    c.fillText('traceroute ▸ probing', h.x+8, h.y+3);
+  }
+}
+
 function drawSceneLab(s, now){
   const c = CX;
 
@@ -212,4 +354,4 @@ function drawSceneLab(s, now){
   }
 }
 
-const SCENES = { 1: drawSceneLab, 2: drawSceneLab };
+const SCENES = { 1: drawSceneLab, 2: drawSceneLab, 3: drawSceneNet };
