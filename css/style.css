@@ -212,6 +212,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .bigbtn:hover{background:rgba(105,224,255,.2);box-shadow:0 0 25px rgba(105,224,255,.3)}
 #titleHelp{color:var(--dim);font-family:var(--mono);font-size:11px;line-height:1.8}
 
+/* --- TEMP dev chapter-select (remove for release) --- */
+#devSelect{margin-top:26px;border-top:1px dashed rgba(255,211,77,.2);padding-top:16px}
+.devlabel{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:rgba(255,211,77,.5)}
+.devbtns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.devbtn{
+  background:rgba(255,211,77,.05);border:1px solid rgba(255,211,77,.3);color:rgba(255,211,77,.8);
+  font-family:var(--mono);font-size:11px;padding:7px 12px;border-radius:6px;cursor:pointer;
+  transition:background .15s,box-shadow .15s,transform .1s;
+}
+.devbtn:hover{background:rgba(255,211,77,.16);box-shadow:0 0 12px rgba(255,211,77,.25)}
+.devbtn:active{transform:scale(.94)}
+
 #endBox{
   width:min(680px,94vw);background:#0a1020;border:1px solid rgba(94,240,138,.35);
   border-radius:10px;padding:30px 34px;

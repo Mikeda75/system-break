@@ -24,6 +24,29 @@ function newGame(provisional){
   return s;
 }
 
+/* TEMP — dev chapter jump (remove for release). Seeds resources and a
+   playable board so any chapter can be tested cold from the title screen. */
+function devJump(ch){
+  wipeSave();
+  const s = newGame();                 // fresh ch1: core + powertap + proc
+  s.dataBank = 500;
+  if (ch>=2) s.aw = 150;
+  if (ch>=3) s.money = 5000;
+  if (ch>=4){ s.money = 500000; s.aw = 320; }
+  if (ch>=5){ s.money = 2000000; s.aw = 520; s.assets = ['island']; }
+  // reset:false chapters (2,4) normally inherit the prior board — start clean
+  if (!CHAPTERS[ch].reset){ s.nodes = []; s.wires = []; }
+  setupChapter(s, ch);
+  // guarantee a usable board for chapters whose start() spawns nothing
+  if (!s.nodes.some(n=>n.type==='core')) spawnNode(s,'core',0,0);
+  if (!s.nodes.some(n=>DEF(n).gen>0)){
+    const gen = ch>=4 ? 'datacenter' : ch>=3 ? 'cloud' : 'powertap';
+    spawnNode(s, gen, -320, -160);
+  }
+  s.coreStageMax = coreStage(s);        // suppress retroactive expansion FX
+  return s;
+}
+
 function setupChapter(s, ch, skipSnapshot){
   s.ch = ch;
   const C = CHAPTERS[ch];

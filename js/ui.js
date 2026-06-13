@@ -77,6 +77,10 @@ const UI = {
     this.el.btnNew.onclick = ()=>{
       wipeSave(); this.resetStory(); S = newGame(); this.hideTitle();
     };
+    // TEMP dev chapter-select (remove for release)
+    document.querySelectorAll('.devbtn').forEach(b=>{
+      b.onclick = ()=>{ this.resetStory(); S = devJump(+b.dataset.ch); this.hideTitle(); };
+    });
   },
 
   resetStory(){
