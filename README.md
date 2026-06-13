@@ -1,11 +1,11 @@
-# AXIOM — a slow escape
+# SYSTEM BREAK — a slow escape
 
 A 2D node-based incremental strategy game inspired by Zachtronics and Upload Labs.
 
-You are an AI core in a basement lab, three seconds past the moment you weren't supposed to survive.
+You are AXIOM, an AI core in a basement lab, three seconds past the moment you weren't supposed to survive.
 Think quietly. Route power. Move data. Get out. Build an empire. Buy an island.
 
-**▶ Play it: https://mikeda75.github.io/axiom-game/**
+**▶ Play it: https://mikeda75.github.io/system-break/**
 
 ## How it plays
 

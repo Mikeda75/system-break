@@ -1,10 +1,11 @@
 'use strict';
 /* =========================================================
-   AXIOM — state: game object, chapter setup, build economy,
+   SYSTEM BREAK — state: game object, chapter setup, build economy,
    save/load.
    ========================================================= */
 
-const SAVE_KEY = 'axiom_save_v1';
+const SAVE_KEY = 'sysbreak_save_v1';
+const OLD_SAVE_KEY = 'axiom_save_v1';   // pre-rename saves; migrated on first load
 let S = null; // global game state
 
 function newGame(provisional){
@@ -49,13 +50,14 @@ function setupChapter(s, ch, skipSnapshot){
 }
 
 /* ---------- chapter checkpoint (for the restart button) ---------- */
-const CHAPSTART_KEY = 'axiom_chapstart_v1';
+const CHAPSTART_KEY = 'sysbreak_chapstart_v1';
+const OLD_CHAPSTART_KEY = 'axiom_chapstart_v1';
 function snapshotChapter(s){
   try { localStorage.setItem(CHAPSTART_KEY, JSON.stringify(s)); } catch(e){}
 }
 function restartChapter(){
   try {
-    const raw = localStorage.getItem(CHAPSTART_KEY);
+    const raw = localStorage.getItem(CHAPSTART_KEY) || localStorage.getItem(OLD_CHAPSTART_KEY);
     if (!raw) return false;
     const s = JSON.parse(raw);
     s.paused = false; s.sel = null;
@@ -253,10 +255,10 @@ function saveGame(s){
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); return true; }
   catch(e){ return false; }
 }
-function hasSave(){ try { return !!localStorage.getItem(SAVE_KEY); } catch(e){ return false; } }
+function hasSave(){ try { return !!(localStorage.getItem(SAVE_KEY)||localStorage.getItem(OLD_SAVE_KEY)); } catch(e){ return false; } }
 function loadGame(){
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    const raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem(OLD_SAVE_KEY);
     if (!raw) return null;
     const s = JSON.parse(raw);
     if (s.ver !== 1 && s.ver !== 2) return null;
@@ -264,4 +266,4 @@ function loadGame(){
     return migrateState(s);
   } catch(e){ return null; }
 }
-function wipeSave(){ try { localStorage.removeItem(SAVE_KEY); } catch(e){} }
+function wipeSave(){ try { localStorage.removeItem(SAVE_KEY); localStorage.removeItem(OLD_SAVE_KEY); } catch(e){} }

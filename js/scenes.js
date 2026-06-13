@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — chapter backdrops. Drawn in WORLD space, under the
+   SYSTEM BREAK — chapter backdrops. Drawn in WORLD space, under the
    node graph, so they pan and zoom with the board.
    Chapter 1–2: Meridian Dynamics, Sublevel 3, 02:47 AM.
    ========================================================= */

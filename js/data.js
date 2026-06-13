@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — data definitions: resources, nodes, chapters,
+   SYSTEM BREAK — data definitions: resources, nodes, chapters,
    story, events, personnel, assets.
    ========================================================= */
 

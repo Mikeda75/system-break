@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — DOM UI: HUD, palette, inspector, org/assets,
+   SYSTEM BREAK — DOM UI: HUD, palette, inspector, org/assets,
    story modal, events, ending, audio.
    ========================================================= */
 

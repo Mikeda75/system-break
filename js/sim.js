@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — simulation tick.
+   SYSTEM BREAK — simulation tick.
 
    Power is a live flow: generators push watts down ⚡ wires,
    split in proportion to downstream unmet demand. A machine

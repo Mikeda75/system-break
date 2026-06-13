@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — input: pan/zoom, placement, wiring, selection.
+   SYSTEM BREAK — input: pan/zoom, placement, wiring, selection.
    ========================================================= */
 
 const Input = {

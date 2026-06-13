@@ -1,6 +1,6 @@
 'use strict';
 /* =========================================================
-   AXIOM — canvas renderer: themed atmosphere, parallax
+   SYSTEM BREAK — canvas renderer: themed atmosphere, parallax
    particles, FX (rings/bursts/text/flashes), glow wires
    with comet packets, gradient nodes with pop-in.
    ========================================================= */

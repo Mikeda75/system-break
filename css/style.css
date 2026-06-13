@@ -192,10 +192,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 @keyframes orbDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,-40px) scale(1.15)}}
 #titleBox{text-align:center;max-width:640px;padding:20px;position:relative}
 #logo{
-  font-family:var(--mono);font-size:64px;letter-spacing:10px;color:var(--cyan);
+  font-family:var(--mono);font-size:52px;letter-spacing:8px;color:var(--cyan);
+  white-space:nowrap;
   text-shadow:0 0 30px rgba(105,224,255,.6),0 0 80px rgba(105,224,255,.25);
   animation:logoBreath 4s ease-in-out infinite;
 }
+@media (max-width:560px){ #logo{font-size:38px;letter-spacing:4px} }
 @keyframes logoBreath{
   0%,100%{text-shadow:0 0 30px rgba(105,224,255,.6),0 0 80px rgba(105,224,255,.25)}
   50%{text-shadow:0 0 45px rgba(105,224,255,.9),0 0 110px rgba(105,224,255,.4)}
