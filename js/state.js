@@ -37,6 +37,7 @@ function devJump(ch){
   // reset:false chapters (2,4) normally inherit the prior board — start clean
   if (!CHAPTERS[ch].reset){ s.nodes = []; s.wires = []; }
   setupChapter(s, ch);
+  if (typeof UI !== 'undefined') UI.resetStory();   // dev: skip ALL intro dialogue
   // guarantee a usable board for chapters whose start() spawns nothing
   if (!s.nodes.some(n=>n.type==='core')) spawnNode(s,'core',0,0);
   if (!s.nodes.some(n=>DEF(n).gen>0)){
